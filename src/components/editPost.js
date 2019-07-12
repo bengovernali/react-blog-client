@@ -1,17 +1,28 @@
 import React, { Component } from "react";
-import { Route } from "react-router";
 
-class AddPost extends Component {
+class EditPost extends Component {
   state = {
     title: "",
     content: "",
     author_id: null
   };
 
-  handleTitleChange = e => {
+  async componentDidMount() {
+    const post = await this.loadData();
+    console.log(post);
     this.setState({
-      title: e.target.value
+      title: post.title,
+      content: post.content,
+      author_id: post.author_id
     });
+  }
+
+  loadData = async () => {
+    const postId = this.props.match.params.post_id;
+    const url = `http://localhost:3000/v1/post/${postId}`;
+    const response = await fetch(url);
+    const data = response.json();
+    return data;
   };
 
   handleContentChange = e => {
@@ -20,21 +31,14 @@ class AddPost extends Component {
     });
   };
 
-  handleAuthorChange = e => {
-    this.setState({
-      author_id: e.target.value
-    });
-  };
-
   handleSubmit = e => {
     e.preventDefault();
-    const title = this.state.title;
+    const postId = this.props.match.params.post_id;
     const content = this.state.content;
-    const author_id = this.state.author_id;
-    const data = { title, content, author_id };
-    const url = `http://localhost:3000/v1/post/add`;
+    const data = { content };
+    const url = `http://localhost:3000/v1/post/update/${postId}`;
     const response = fetch(url, {
-      method: "POST",
+      method: "PUT",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
@@ -54,25 +58,14 @@ class AddPost extends Component {
   render() {
     return (
       <>
+        <h2>{this.state.title}</h2>
         <form onSubmit={this.handleSubmit}>
-          <label> Title: </label>
-          <input
-            type="text"
-            onChange={this.handleTitleChange}
-            name="title"
-            value={this.state.title}
-          />
           <label> Content: </label>
           <input
             type="text"
             onChange={this.handleContentChange}
+            value={this.state.content}
             name="content"
-          />
-          <label> Author ID: </label>
-          <input
-            type="text"
-            onChange={this.handleAuthorChange}
-            name="author_id"
           />
           <input type="submit" value="Submit" />
         </form>
@@ -81,4 +74,4 @@ class AddPost extends Component {
   }
 }
 
-export default AddPost;
+export default EditPost;
