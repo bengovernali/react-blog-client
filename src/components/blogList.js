@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 class BlogList extends Component {
-    state= {
-        posts: []
-    };
+    constructor(props) {
+        super(props);
+        this.state= {
+            posts: []
+        };
+    }
 
     async componentDidMount() {
         const posts = await this.loadData();
@@ -20,8 +23,17 @@ class BlogList extends Component {
         return data;
     }
 
+    handleChange = async (event) => {
+        const changeValue= await this.setState({
+            posts: event.target.value
+        });
+        console.log(changeValue);
+        return changeValue;
+    }
+
     render() {
         const { posts } = this.state;
+        
         return (
             <>
                 <ul>
@@ -31,6 +43,19 @@ class BlogList extends Component {
                     )}
                     
                 </ul>
+                <form>
+                    <label>
+                        Title:
+                        <input type="text" value={this.state.value} onChange={() => this.changeValue}></input>
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <h2>Add a Post:</h2>
+                <div>
+                    <input type='text' placeholder='Title' value={posts.title}/>
+                    <input type='text' placeholder='Content' value={posts.content}/>
+                    <input type='text' placeholder='Author ID' value={posts.author_id}/>
+                </div>
             </>
         );
     }

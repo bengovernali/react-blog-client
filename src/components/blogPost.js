@@ -21,6 +21,12 @@ class BlogPost extends Component {
         return data;
     }
 
+    // addPost = async (newPost) => {
+    //     this.setState({
+    //         post: ++newPost
+    //     })
+    // }
+
     render() {
         const { post } = this.state;
         return (
